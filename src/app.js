@@ -5,7 +5,7 @@ const cors = require('cors');
 
 require('dotenv').config();
 
-
+const middlewares = require('./middlewares');
 const router = require('./routes/index');
 const swaggerSetup = require('./config/swagger');
 
@@ -26,5 +26,8 @@ app.get('/', (req, res) => {
 });
 
 app.use('/' , router);
+
+app.use(middlewares.notFound);
+app.use(middlewares.errorHandler);
 
 module.exports = app;

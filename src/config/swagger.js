@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const options = {
     swaggerDefinition: {
+        openapi: '3.1.0',
         info: {
             title: 'API Documentation',
             version: '1.0.0',
