@@ -34,7 +34,14 @@ const getProfile = async (userId) => {
     if (!profileExist) {
         throw new NotFoundError('Profile not found');
     }
-    return profileExist;
+    const profileData = {
+        id: profileExist.id,
+        username: profileExist.username,
+        bio: profileExist.bio,
+        dateOfBirth: profileExist.dateOfBirth,
+        profilePicture: profileExist.profilePicture ? `${process.env.BASE_URL}${profileExist.profilePicture}` : null,
+    };
+    return profileData;
 }
 
 const createProfile = async (body, files, userId) => {
