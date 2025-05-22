@@ -3,6 +3,8 @@ const { StatusCodes } = require('http-status-codes');
 const { user } = require('../../models');
 const { loginSchema } = require('../../common/validation/auth/auth');
 const {comparePassword} = require('../../common/utils/user');
+const { JWT_SECRET } = process.env;
+const { generateToken } = require('../../common/utils/jwt');
 
 
 
@@ -23,8 +25,16 @@ const login = async (body) => {
     if (!isPasswordValid) {
         throw new BaseError(StatusCodes.UNAUTHORIZED, 'Invalid password');
     }
+    const token = generateToken({ id: userExist.id, email: userExist.email });
+    const userData = {
+        id: userExist.id,
+        name: userExist.name,
+        email: userExist.email,
+        token,
+    };
+        
 
-    return userExist;
+    return userData;
 }
 
 module.exports = {
