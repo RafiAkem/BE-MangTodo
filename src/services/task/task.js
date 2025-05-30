@@ -1,0 +1,118 @@
+const {
+  BaseError,
+  NotFoundError,
+} = require("../../common/responses/error-response");
+const { StatusCodes } = require("http-status-codes");
+const { Task, Category } = require("../../models");
+
+const createTask = async (userId, body) => {
+  if (body.categoryId) {
+    const category = await Category.findOne({
+      where: { id: body.categoryId, userId },
+    });
+
+    if (!category) {
+      throw new NotFoundError("Category not found");
+    }
+  }
+
+  const task = await Task.create({
+    ...body,
+    userId,
+  });
+
+  return task;
+};
+
+const getTasks = async (userId, query = {}) => {
+  const where = { userId };
+
+  if (query.categoryId) {
+    where.categoryId = query.categoryId;
+  }
+
+  if (query.status) {
+    where.status = query.status;
+  }
+
+  if (query.priority) {
+    where.priority = query.priority;
+  }
+
+  const tasks = await Task.findAll({
+    where,
+    include: [
+      {
+        model: Category,
+        as: "category",
+        attributes: ["id", "name"],
+      },
+    ],
+    order: [["createdAt", "DESC"]],
+  });
+
+  return tasks;
+};
+
+const getTaskById = async (userId, taskId) => {
+  const task = await Task.findOne({
+    where: { id: taskId, userId },
+    include: [
+      {
+        model: Category,
+        as: "category",
+        attributes: ["id", "name"],
+      },
+    ],
+  });
+
+  if (!task) {
+    throw new NotFoundError("Task not found");
+  }
+
+  return task;
+};
+
+const updateTask = async (userId, taskId, body) => {
+  const task = await Task.findOne({
+    where: { id: taskId, userId },
+  });
+
+  if (!task) {
+    throw new NotFoundError("Task not found");
+  }
+
+  if (body.categoryId) {
+    const category = await Category.findOne({
+      where: { id: body.categoryId, userId },
+    });
+
+    if (!category) {
+      throw new NotFoundError("Category not found");
+    }
+  }
+
+  await task.update(body);
+  return task;
+};
+
+const deleteTask = async (userId, taskId) => {
+  const task = await Task.findOne({
+    where: { id: taskId, userId },
+  });
+
+  if (!task) {
+    throw new NotFoundError("Task not found");
+  }
+
+  await task.destroy();
+  return { message: "Task deleted successfully" };
+};
+
+module.exports = {
+  createTask,
+  getTasks,
+  getTaskById,
+  updateTask,
+  deleteTask,
+};

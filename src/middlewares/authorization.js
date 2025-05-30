@@ -3,14 +3,14 @@ const { BaseError } = require("../common/responses/error-response");
 const { StatusCodes } = require("http-status-codes");
 
 /**
- * Middleware to check if the user exists
+ * Middleware to verify user ID
  * @param {Object} req - The request object
  * @param {Object} res - The response object
  * @param {Function} next - The next middleware function
  */
 const authMiddleware = async (req, res, next) => {
   try {
-    const userId = req.body.userId;
+    const userId = req.headers["user-id"];
     if (!userId) {
       throw new BaseError(StatusCodes.UNAUTHORIZED, "User ID not provided");
     }
