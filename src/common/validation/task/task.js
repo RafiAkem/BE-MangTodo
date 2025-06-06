@@ -1,6 +1,7 @@
 const Joi = require("joi");
 
 const createTaskSchema = Joi.object({
+  userId: Joi.string().uuid().required(),
   title: Joi.string().required().min(1).max(200),
   description: Joi.string().allow("").max(1000),
   dueDate: Joi.date().iso().allow(null),
@@ -12,6 +13,7 @@ const createTaskSchema = Joi.object({
 });
 
 const updateTaskSchema = Joi.object({
+  userId: Joi.string().uuid().required(),
   title: Joi.string().min(1).max(200),
   description: Joi.string().allow("").max(1000),
   dueDate: Joi.date().iso().allow(null),
