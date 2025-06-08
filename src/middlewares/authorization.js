@@ -10,7 +10,7 @@ const { StatusCodes } = require("http-status-codes");
  */
 const authMiddleware = async (req, res, next) => {
   try {
-    const userId = req.body.userId;
+    const userId = req.body.userId || req.query.userId;
     if (!userId) {
       throw new BaseError(StatusCodes.UNAUTHORIZED, "User ID not provided");
     }

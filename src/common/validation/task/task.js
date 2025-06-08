@@ -5,10 +5,12 @@ const createTaskSchema = Joi.object({
   title: Joi.string().required().min(1).max(200),
   description: Joi.string().allow("").max(1000),
   dueDate: Joi.date().iso().allow(null),
-  priority: Joi.string().valid("low", "med", "high").default("med"),
+  dueTime: Joi.string()
+    .pattern(/^([01]\d|2[0-3]):([0-5]\d)(:([0-5]\d))?$/)
+    .allow(null),
   status: Joi.string()
-    .valid("pending", "in_progress", "complete")
-    .default("pending"),
+    .valid("in_progress", "complete", "late")
+    .default("in_progress"),
   categoryId: Joi.string().uuid().allow(null),
 });
 
@@ -17,8 +19,10 @@ const updateTaskSchema = Joi.object({
   title: Joi.string().min(1).max(200),
   description: Joi.string().allow("").max(1000),
   dueDate: Joi.date().iso().allow(null),
-  priority: Joi.string().valid("low", "med", "high"),
-  status: Joi.string().valid("pending", "in_progress", "complete"),
+  dueTime: Joi.string()
+    .pattern(/^([01]\d|2[0-3]):([0-5]\d)(:([0-5]\d))?$/)
+    .allow(null),
+  status: Joi.string().valid("in_progress", "complete", "late"),
   categoryId: Joi.string().uuid().allow(null),
 });
 

@@ -21,14 +21,13 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: true,
       },
-      priority: {
-        type: Sequelize.ENUM("low", "med", "high"),
-        defaultValue: "med",
-        allowNull: false,
+      dueTime: {
+        type: Sequelize.TIME,
+        allowNull: true,
       },
       status: {
-        type: Sequelize.ENUM("pending", "in_progress", "complete"),
-        defaultValue: "pending",
+        type: Sequelize.ENUM("in_progress", "complete", "late"),
+        defaultValue: "in_progress",
         allowNull: false,
       },
       userId: {

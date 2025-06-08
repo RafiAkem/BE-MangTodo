@@ -14,7 +14,10 @@ const createCategory = async (req, res) => {
     });
   }
 
-  const category = await categoryService.createCategory(req.user.id, req.body);
+  const category = await categoryService.createCategory(
+    req.body.userId,
+    req.body
+  );
   res.status(StatusCodes.CREATED).json({
     status: "success",
     data: category,
@@ -22,7 +25,7 @@ const createCategory = async (req, res) => {
 };
 
 const getCategories = async (req, res) => {
-  const categories = await categoryService.getCategories(req.user.id);
+  const categories = await categoryService.getCategories(req.query.userId);
   res.status(StatusCodes.OK).json({
     status: "success",
     data: categories,
@@ -31,7 +34,7 @@ const getCategories = async (req, res) => {
 
 const getCategoryById = async (req, res) => {
   const category = await categoryService.getCategoryById(
-    req.user.id,
+    req.query.userId,
     req.params.id
   );
   res.status(StatusCodes.OK).json({
@@ -50,7 +53,7 @@ const updateCategory = async (req, res) => {
   }
 
   const category = await categoryService.updateCategory(
-    req.user.id,
+    req.body.userId,
     req.params.id,
     req.body
   );
@@ -62,7 +65,7 @@ const updateCategory = async (req, res) => {
 
 const deleteCategory = async (req, res) => {
   const result = await categoryService.deleteCategory(
-    req.user.id,
+    req.body.userId,
     req.params.id
   );
   res.status(StatusCodes.OK).json({
