@@ -1,4 +1,4 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, Op } = require("sequelize");
 
 module.exports = (sequelize) => {
   const Task = sequelize.define(
@@ -77,30 +77,11 @@ module.exports = (sequelize) => {
           }
         },
         beforeFind: async (options) => {
-          // Find all in_progress tasks that are overdue
-          const overdueInProgressTasks = await Task.findAll({
-            where: {
-              status: "in_progress",
-              dueDate: {
-                [sequelize.Op.lt]: new Date(),
-              },
-            },
-          });
-
-          const now = new Date();
-
-          for (const task of overdueInProgressTasks) {
-            let taskDueDateTime = new Date(task.dueDate);
-            if (task.dueTime) {
-              const [hours, minutes, seconds] = task.dueTime
-                .split(":")
-                .map(Number);
-              taskDueDateTime.setHours(hours, minutes, seconds || 0, 0);
-            }
-
-            if (taskDueDateTime < now) {
-              await task.update({ status: "late" });
-            }
+          // Only add the overdue check if it's not already in the where clause
+          if (options.where && !options.where.status) {
+            options.where.status = {
+              [Op.ne]: "complete", // Not equal to complete
+            };
           }
         },
       },

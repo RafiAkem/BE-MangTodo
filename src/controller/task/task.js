@@ -14,7 +14,7 @@ const createTask = async (req, res) => {
     });
   }
 
-  const task = await taskService.createTask(req.body.userId, req.body);
+  const task = await taskService.createTask(req.user.id, req.body);
   res.status(StatusCodes.CREATED).json({
     status: "success",
     data: task,
@@ -22,7 +22,7 @@ const createTask = async (req, res) => {
 };
 
 const getTasks = async (req, res) => {
-  const tasks = await taskService.getTasks(req.body.userId, req.query);
+  const tasks = await taskService.getTasks(req.user.id, req.query);
   res.status(StatusCodes.OK).json({
     status: "success",
     data: tasks,
@@ -30,7 +30,7 @@ const getTasks = async (req, res) => {
 };
 
 const getTaskById = async (req, res) => {
-  const task = await taskService.getTaskById(req.body.userId, req.params.id);
+  const task = await taskService.getTaskById(req.user.id, req.params.id);
   res.status(StatusCodes.OK).json({
     status: "success",
     data: task,
@@ -47,7 +47,7 @@ const updateTask = async (req, res) => {
   }
 
   const task = await taskService.updateTask(
-    req.body.userId,
+    req.user.id,
     req.params.id,
     req.body
   );
@@ -58,7 +58,7 @@ const updateTask = async (req, res) => {
 };
 
 const deleteTask = async (req, res) => {
-  const result = await taskService.deleteTask(req.body.userId, req.params.id);
+  const result = await taskService.deleteTask(req.user.id, req.params.id);
   res.status(StatusCodes.OK).json({
     status: "success",
     data: result,
