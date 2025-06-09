@@ -65,7 +65,7 @@ const updateCategory = async (req, res) => {
 
 const deleteCategory = async (req, res) => {
   const result = await categoryService.deleteCategory(
-    req.body.userId,
+    req.query.userId,
     req.params.id
   );
   res.status(StatusCodes.OK).json({
