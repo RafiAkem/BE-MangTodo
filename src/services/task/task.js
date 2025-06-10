@@ -102,7 +102,11 @@ const updateTask = async (userId, taskId, body) => {
   });
 
   if (!task) {
-    throw new NotFoundError("Task not found");
+    return {
+      success: true,
+      message: "Task not found or already deleted",
+      updated: false,
+    };
   }
 
   if (body.categoryId) {
@@ -116,7 +120,12 @@ const updateTask = async (userId, taskId, body) => {
   }
 
   await task.update(body);
-  return task;
+  return {
+    success: true,
+    message: "Task updated successfully",
+    updated: true,
+    data: task,
+  };
 };
 
 const deleteTask = async (userId, taskId) => {
@@ -124,12 +133,20 @@ const deleteTask = async (userId, taskId) => {
     where: { id: taskId, userId },
   });
 
-  if (!task) {
-    throw new NotFoundError("Task not found");
+  if (task) {
+    await task.destroy();
+    return {
+      success: true,
+      message: "Task deleted successfully",
+      deleted: true,
+    };
   }
 
-  await task.destroy();
-  return { message: "Task deleted successfully" };
+  return {
+    success: true,
+    message: "Task not found or already deleted",
+    deleted: false,
+  };
 };
 
 module.exports = {

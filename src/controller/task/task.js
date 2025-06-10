@@ -38,31 +38,48 @@ const getTaskById = async (req, res) => {
 };
 
 const updateTask = async (req, res) => {
-  const { error } = updateTaskSchema.validate(req.body);
-  if (error) {
-    return res.status(StatusCodes.BAD_REQUEST).json({
+  try {
+    const { error } = updateTaskSchema.validate(req.body);
+    if (error) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        status: "error",
+        message: error.details[0].message,
+      });
+    }
+
+    const result = await taskService.updateTask(
+      req.user.id,
+      req.params.id,
+      req.body
+    );
+
+    res.status(StatusCodes.OK).json({
+      status: "success",
+      data: result,
+    });
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       status: "error",
-      message: error.details[0].message,
+      message: "Failed to update task",
+      error: error.message,
     });
   }
-
-  const task = await taskService.updateTask(
-    req.user.id,
-    req.params.id,
-    req.body
-  );
-  res.status(StatusCodes.OK).json({
-    status: "success",
-    data: task,
-  });
 };
 
 const deleteTask = async (req, res) => {
-  const result = await taskService.deleteTask(req.user.id, req.params.id);
-  res.status(StatusCodes.OK).json({
-    status: "success",
-    data: result,
-  });
+  try {
+    const result = await taskService.deleteTask(req.user.id, req.params.id);
+    res.status(StatusCodes.OK).json({
+      status: "success",
+      data: result,
+    });
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      status: "error",
+      message: "Failed to delete task",
+      error: error.message,
+    });
+  }
 };
 
 module.exports = {
